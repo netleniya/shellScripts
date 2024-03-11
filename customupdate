@@ -1,0 +1,23 @@
+#!/bin/zsh
+export PATH=$PATH:/usr/local/bin:/Users/peterfiee/.pyenv/shims
+
+#Create logfiles for storing Homebrew and Pip Output
+BREWLOG=/usr/local/var/log/brew.log
+PIPLOG=/usr/local/var/log/pip.log
+
+if [ "! -f $BREWLOG" ] || [ "! -f $PIPLOG" ]
+then
+	touch $BREWLOG
+	touch $PIPLOG
+	echo "Updating Homebrew..."
+	BREW="brew update && brew upgrade && brew upgrade --cask && brew cleanup && brew doctor"
+ 	eval $BREW > $BREWLOG 2>&1
+	echo "Done!"
+	sleep 5
+	echo "Running PIP..."
+	PIP="pip-review --auto"
+	#PIP="pip list --outdated | cut -f1 -d' ' | tr ' ' '\n' | awk '{if(NR>=7)print}' | cut -d' ' -f1 | xargs -n1 pip3 install -U"
+	eval $PIP > $PIPLOG 2>&1
+	echo "Done"
+fi
+echo "All Updates Complete.!"
